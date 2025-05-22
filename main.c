@@ -16,6 +16,7 @@ Funções:
 char nomeGlobal[50] = "admin";
 char senhaGlobal[50] = "Admin123";
 int opcao, acesso = 0;
+int qtdCarrosAlugados = 0;
 
 int login(){ 
     char nome[50];
@@ -42,6 +43,7 @@ int login(){
 }
 
 char carro[10][5][30]; 
+char historicoCarro[10];
 int quantidadeCarro = 0;
 int idCarro = 1;
 
@@ -90,6 +92,13 @@ int cadastrarCarro(){
 }
 
 void listarCarrosDisponiveis(){
+    // mostrar se todos os carros foram alugados
+    if(quantidadeCarro == 0){
+        printf("Nao tem carros para listar.\n");
+        system("pause");
+        system("cls");
+        return;
+    }
 
     printf("\nOpcoes de carros: \n\n");
 
@@ -116,11 +125,18 @@ void alugarCarro(){
     int tempoAluguel = 0;
     int valorAluguel = 0;
 
+    if(quantidadeCarro == 0){
+        printf("Nao tem carros para alugar.\n");
+        system("pause");
+        system("cls");
+        return;
+    }
+
     printf("Aluque seu carro agora\n\n");
     printf("Qual e o codigo do Id do carro que deseja alugar: ");
     scanf("%d", &idAluguel);
 
-    idAluguel--;
+    idAluguel--; //saber se o carro ja foi alugado ou nao 
     printf("Esse e o carro selecionado: \n");
     printf("id- %s| ", carro[idAluguel][0]);
     printf("M - %s| ", carro[idAluguel][1]);
@@ -142,24 +158,70 @@ void alugarCarro(){
 }
 
 void devolverCarro(){
-    printf("Esses sao os carros alugados para serem devolvidos:\n");
+    int idCarroDevolvido = 0;
+    char devolverMaisCarro[4];
+    int carroDisponivel = 0;
+
     int i;
-    
-    for(i = 0; i < quantidadeCarro; i++){
-        if(strcmp(carro[i][4], "nao") == 0){
-            printf("id- %s| ", carro[i][0]);
-            printf("M - %s| ", carro[i][1]);
-            printf("A - %s| ", carro[i][2]);
-            printf("P - %s| ", carro[i][3]);
-            printf("D - %s\n\n", carro[i][4]);
+    for(i = 0; i <= quantidadeCarro; i++){
+        if(quantidadeCarro == 0){
+            printf("Nao tem carros para serem devolvidos.\n");
+            system("pause");
+            system("cls");
+            return;
+
+        }else if(strcmp(carro[i][4], "sim") == 0){
+            carroDisponivel++;
+            
+            if(carroDisponivel == quantidadeCarro){ 
+                printf("Nao tem carros para serem devolvidos.\n");
+                system("pause");
+                system("cls");
+                return;
+            }
         }
     }
 
+    printf("Esses sao os carros alugados para serem devolvidos:\n");
+    
+    int i2;
+    for(i2 = 0; i2 < quantidadeCarro; i2++){
+       
+        if(strcmp(carro[i2][4], "nao") == 0){
+            printf("id- %s| ", carro[i2][0]);
+            printf("M - %s| ", carro[i2][1]);
+            printf("A - %s| ", carro[i2][2]);
+            printf("P - %s| ", carro[i2][3]);
+            printf("D - %s\n\n", carro[i2][4]);
+
+            //sprintf(historicoCarro[i2], "%s", carro[i2][i2]);
+        }
+    }
+
+    printf("Qual o Id do carro que voce deseja devolver: ");
+    scanf("%d", &idCarroDevolvido);
+
+    idCarroDevolvido--;
+    sprintf(carro[idCarroDevolvido][4], "%s", "sim");
+
+    printf("O carro foi devolvido. \n");
+    qtdCarrosAlugados++;
     system("pause");
+
+    printf("Deseja devolver mais algum carro: ");
+    scanf("%s", devolverMaisCarro);
+
+    if(strcmp(devolverMaisCarro, "sim") == 0){
+        devolverCarro();
+        system("cls");
+    }
+    system("cls");
 
 }
 
 void historicoAlugueis(){
+    printf("Quantidade de carros que foram aluados: %d\n\n", qtdCarrosAlugados);
+
 
 }
 
